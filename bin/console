@@ -2,6 +2,9 @@
 <?php
 
 use Mamay86\StatisticClass\ClassStatisticCommand;
+use Mamay86\StatisticClass\Test\Test1;
+use Mamay86\StatisticClass\Test\Test2;
+use Mamay86\StatisticClass\Test\Test3;
 use Symfony\Component\Console\Application;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -9,8 +12,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $application = new Application('Statistic Class');
 
 $application->add(new ClassStatisticCommand(
-    __DIR__ . '/../tests/',
-    'Mamay86\\StatisticClass'
+    __DIR__ . '/../src/Test/',
+    'Mamay86\\StatisticClass\\Test'
 ));
 
 $exitCode = $application->run();

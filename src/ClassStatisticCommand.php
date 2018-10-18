@@ -11,7 +11,6 @@
 
 namespace Mamay86\StatisticClass;
 
-use phpDocumentor\Reflection\DocBlockFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -52,9 +51,6 @@ class ClassStatisticCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $counter = 0;
-        $factory = DocBlockFactory::createInstance();
-
         $finder = new Finder();
         $finder
             ->files()
@@ -64,34 +60,31 @@ class ClassStatisticCommand extends Command
 
         foreach ($finder as $file) {
             $path = $file->getRelativePathname();
-            var_dump($path);
             $fullClassName = $this->rootNamespace . '\\' . \rtrim($path, '.php');
 
             try {
                 $reflector = new \ReflectionClass($fullClassName);
             } catch (\ReflectionException $e) {
+                var_dump($e->getMessage());
                 continue;
             }
 
-            if (!$docComment = $reflector->getDocComment()) {
-                continue;
+            $classStatus = "";
+            if ($reflector->isAbstract()) {
+                $classStatus = "(Abstract class)";
+            } elseif ($reflector->isFinal()) {
+                $classStatus = "(Final class)";
             }
-
-            $docBlock = $factory->create($docComment);
-            /* @var \phpDocumentor\Reflection\DocBlock\Tags\Author[] $authors */
-            $authors = $docBlock->getTagsByName('author');
-
-            foreach ($authors as $author) {
-                if ($author->getEmail() === $email) {
-                    ++$counter;
-
-                    break;
-                }
-            }
+            $output->writeln(\sprintf('<info>Class: %s %s</info>', $reflector->getShortName(), $classStatus));
+            $output->writeln(\sprintf('<info>Properties:</info>'));
+            $output->writeln("\t".\sprintf('<info>public: %s</info>', count($reflector->getProperties(\ReflectionProperty::IS_PUBLIC))));
+            $output->writeln("\t".\sprintf('<info>protected: %s</info>', count($reflector->getProperties(\ReflectionProperty::IS_PROTECTED))));
+            $output->writeln("\t".\sprintf('<info>private: %s</info>', count($reflector->getProperties(\ReflectionProperty::IS_PRIVATE))));
+            $output->writeln(\sprintf('<info>Methods:</info>'));
+            $output->writeln("\t".\sprintf('<info>public: %s</info>', count($reflector->getMethods(\ReflectionProperty::IS_PUBLIC))));
+            $output->writeln("\t".\sprintf('<info>protected: %s</info>', count($reflector->getMethods(\ReflectionProperty::IS_PROTECTED))));
+            $output->writeln("\t".\sprintf('<info>private: %s</info>', count($reflector->getMethods(\ReflectionProperty::IS_PRIVATE)))."\n");
         }
 
-        $output->writeln(
-            \sprintf('<info>Developer with email "%s" was created %d classes.</info>', $email, $counter)
-        );
     }
 }
