@@ -1,6 +1,17 @@
 #!/usr/bin/env php
 <?php
 
+use Mamay86\StatisticClass\ClassStatisticCommand;
+use Symfony\Component\Console\Application;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
+$application = new Application('Statistic Class');
 
+$application->add(new ClassStatisticCommand(
+    __DIR__ . '/../tests/',
+    'Mamay86\\StatisticClass'
+));
+
+$exitCode = $application->run();
+exit($exitCode);
