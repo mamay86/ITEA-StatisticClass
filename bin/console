@@ -2,9 +2,6 @@
 <?php
 
 use Mamay86\StatisticClass\ClassStatisticCommand;
-use Mamay86\StatisticClass\Test\Test1;
-use Mamay86\StatisticClass\Test\Test2;
-use Mamay86\StatisticClass\Test\Test3;
 use Symfony\Component\Console\Application;
 
 require_once __DIR__ . '/../vendor/autoload.php';
