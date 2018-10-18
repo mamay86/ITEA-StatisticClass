@@ -1,3 +1,5 @@
+php bin/console app:class-statistic
+
 Default Project
 ===============
 
